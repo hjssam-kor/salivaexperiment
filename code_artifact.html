@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>중학 과학 탐구 - 침의 소화 작용 알아보기</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts for Korean Friendly Clean Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    .font-jua {
+      font-family: 'Jua', sans-serif;
+    }
+    /* Liquid animations */
+    @keyframes wave {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(1deg); }
+    }
+    .liquid-wave {
+      animation: wave 3s ease-in-out infinite;
+    }
+    @keyframes bubbleRise {
+      0% { transform: translateY(0px); opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { transform: translateY(-30px); opacity: 0; }
+    }
+    .bubble {
+      animation: bubbleRise 1.8s infinite ease-in;
+    }
+    @keyframes steamRise {
+      0% { transform: translateY(0) scaleX(1); opacity: 0.6; }
+      100% { transform: translateY(-35px) scaleX(1.3); opacity: 0; }
+    }
+    .steam {
+      animation: steamRise 2s infinite linear;
+    }
+    /* Draggable items & drag-over highlighting */
+    .drag-source {
+      cursor: grab;
+      touch-action: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .drag-source:active, .is-dragging {
+      cursor: grabbing;
+      transform: scale(1.06);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+      z-index: 50;
+    }
+    .drop-active {
+      outline: 3px dashed #3b82f6 !important;
+      outline-offset: 3px;
+      background-color: rgba(59, 130, 246, 0.15) !important;
+      transform: scale(1.02);
+    }
+    /* Pipette squeeze drop animation */
+    @keyframes dropFall {
+      0% { transform: translateY(-10px) scale(0.6); opacity: 0; }
+      50% { opacity: 1; transform: translateY(15px) scale(1); }
+      100% { transform: translateY(40px) scale(0.4); opacity: 0; }
+    }
+    .anim-drop {
+      animation: dropFall 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    /* Pipette Hover & Drag Styling */
+    .pipette-holder {
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+      cursor: grab;
+      touch-action: none;
+    }
+    .pipette-holder:hover {
+      transform: translateY(-4px) scale(1.03);
+      filter: drop-shadow(0 12px 16px rgba(0,0,0,0.18));
+    }
+    .pipette-holder:active, .pipette-dragging {
+      cursor: grabbing;
+      transform: scale(1.08) rotate(-12deg);
+      filter: drop-shadow(0 16px 20px rgba(0,0,0,0.25));
+      z-index: 60;
+    }
+    @keyframes dropPulse {
+      0%, 100% { transform: translateY(0); opacity: 0.9; }
+      50% { transform: translateY(3px); opacity: 1; }
+    }
+    .dripping-drop {
+      animation: dropPulse 1.2s infinite ease-in-out;
+    }
+    /* Compact Scrollbar for Quiz Section */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-sky-50 to-emerald-50 h-screen w-screen overflow-hidden text-slate-800 flex flex-col justify-between p-2 md:p-3">
+
+  <!-- Top Header (Compact for 10-inch tablet) -->
+  <header class="bg-white/95 backdrop-blur-md border border-indigo-100 shadow-sm rounded-xl px-3 py-2 flex items-center justify-between gap-2 shrink-0">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-base shadow font-jua">
+        🧪
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-extrabold uppercase text-indigo-600 bg-indigo-50 px-1.5 py-0.2 rounded">중학 과학 2학년</span>
+          <h1 class="text-sm md:text-base font-extrabold text-slate-800 tracking-tight font-jua">침의 소화 작용 탐구 실험실</h1>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Stepper Navigation -->
+    <nav class="flex items-center space-x-1 bg-slate-100/90 p-1 rounded-xl text-xs font-semibold">
+      <button onclick="goToStep(1)" id="step-btn-1" class="px-2.5 py-1 rounded-lg transition-all text-white bg-indigo-600 shadow-sm flex items-center gap-1">
+        <span class="w-4 h-4 rounded-full bg-white/25 text-[10px] flex items-center justify-center font-bold">1</span>
+        <span>용액 준비 & 체온 보온</span>
+      </button>
+      <button onclick="goToStep(2)" id="step-btn-2" class="px-2.5 py-1 rounded-lg transition-all text-slate-600 hover:text-indigo-600 flex items-center gap-1">
+        <span class="w-4 h-4 rounded-full bg-slate-200 text-[10px] flex items-center justify-center font-bold">2</span>
+        <span>녹말 검출(아이오딘)</span>
+      </button>
+      <button onclick="goToStep(3)" id="step-btn-3" class="px-2.5 py-1 rounded-lg transition-all text-slate-600 hover:text-indigo-600 flex items-center gap-1">
+        <span class="w-4 h-4 rounded-full bg-slate-200 text-[10px] flex items-center justify-center font-bold">3</span>
+        <span>당 검출(베네딕트 & 가열)</span>
+      </button>
+      <button onclick="goToStep(4)" id="step-btn-4" class="px-2.5 py-1 rounded-lg transition-all text-slate-600 hover:text-indigo-600 flex items-center gap-1">
+        <span class="w-4 h-4 rounded-full bg-slate-200 text-[10px] flex items-center justify-center font-bold">4</span>
+        <span class="font-bold text-indigo-700">탐구 정리 & 퀴즈 🔥</span>
+      </button>
+    </nav>
+
+    <!-- Reset Control -->
+    <button onclick="resetLab()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-200 flex items-center gap-1 transition">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      <span>처음부터 다시</span>
+    </button>
+  </header>
+
+  <!-- Tablet Real-time Guide Banner (Compact) -->
+  <section id="instruction-box" class="bg-white/90 border-l-4 border-indigo-500 px-3 py-1.5 rounded-xl shadow-xs my-1.5 flex items-center justify-between gap-2 shrink-0">
+    <div class="flex items-center gap-2.5 overflow-hidden">
+      <span class="text-xl" id="guide-emoji">💡</span>
+      <div class="truncate">
+        <h2 class="text-xs font-bold text-indigo-900 inline mr-2" id="guide-title">1단계: 시험관에 시약 넣기</h2>
+        <span class="text-xs text-slate-600" id="guide-desc">
+          시약을 드래그하거나 클릭하여 시험관 (가)와 (나)에 각각 넣어주세요.
+        </span>
+      </div>
+    </div>
+    <span id="step-badge" class="shrink-0 px-2 py-0.5 bg-indigo-50 text-indigo-700 font-bold rounded-full text-[11px]">Step 1 / 4</span>
+  </section>
+
+  <!-- Main Interactive Lab Stage (Single-Screen Fit) -->
+  <main class="bg-white/95 rounded-2xl shadow-lg border border-white/80 p-3 flex-1 flex flex-col justify-between relative overflow-hidden backdrop-blur-sm min-h-0">
+
+    <!-- ======================================================== -->
+    <!-- STEP 1: 용액 준비 및 체온 유지 (36.5°C 보온)           -->
+    <!-- ======================================================== -->
+    <div id="step-1" class="step-view flex flex-col h-full justify-between">
+      <div class="grid grid-cols-12 gap-3 items-center flex-1 min-h-0">
+        
+        <!-- Reagents Shelf (Left) -->
+        <div class="col-span-4 bg-slate-50/90 border border-slate-200 rounded-xl p-2.5 flex flex-col justify-between h-full shadow-inner">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
+            <span class="text-xs font-bold text-slate-700 flex items-center gap-1">🧴 시약 보관대</span>
+            <span class="text-[10px] text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded font-bold">드래그 또는 터치</span>
+          </div>
+
+          <div class="space-y-2 my-auto">
+            <!-- 1% Starch -->
+            <div id="reagent-starch" draggable="true" ondragstart="handleDragStart(event, 'starch')" onclick="selectReagent('starch')"
+                 class="drag-source bg-white border-2 border-slate-200 hover:border-indigo-400 p-2 rounded-xl flex items-center justify-between shadow-xs cursor-grab">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center font-bold text-base">🌾</div>
+                <div>
+                  <div class="text-xs font-bold text-slate-800">1% 녹말 용액</div>
+                  <div class="text-[10px] text-slate-500">(가), (나)에 각 2mL</div>
+                </div>
+              </div>
+              <span class="text-[11px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-bold" id="starch-stock">2회 남음</span>
+            </div>
+
+            <!-- Distilled Water -->
+            <div id="reagent-water" draggable="true" ondragstart="handleDragStart(event, 'water')" onclick="selectReagent('water')"
+                 class="drag-source bg-white border-2 border-slate-200 hover:border-blue-400 p-2 rounded-xl flex items-center justify-between shadow-xs cursor-grab">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-base">💧</div>
+                <div>
+                  <div class="text-xs font-bold text-slate-800">증류수 2mL</div>
+                  <div class="text-[10px] text-blue-600 font-semibold">(가) 대조군용</div>
+                </div>
+              </div>
+              <span class="text-[11px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-bold" id="water-stock">1회 남음</span>
+            </div>
+
+            <!-- Diluted Saliva -->
+            <div id="reagent-saliva" draggable="true" ondragstart="handleDragStart(event, 'saliva')" onclick="selectReagent('saliva')"
+                 class="drag-source bg-white border-2 border-slate-200 hover:border-amber-400 p-2 rounded-xl flex items-center justify-between shadow-xs cursor-grab">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-base">🫧</div>
+                <div>
+                  <div class="text-xs font-bold text-slate-800">침 희석액 2mL</div>
+                  <div class="text-[10px] text-amber-600 font-semibold">(나) 아밀레이스 효소</div>
+                </div>
+              </div>
+              <span class="text-[11px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-bold" id="saliva-stock">1회 남음</span>
+            </div>
+          </div>
+
+          <div class="text-[10px] bg-indigo-50/80 text-indigo-900 p-2 rounded-lg leading-tight border border-indigo-100">
+            💡 <strong>대조 실험 원리:</strong> (가)에는 증류수를, (나)에는 침을 넣어 <strong>소화 효소 유무에 따른 차이</strong>를 비교합니다.
+          </div>
+        </div>
+
+        <!-- Water Bath & Test Tubes Center Area -->
+        <div class="col-span-8 flex flex-col items-center justify-center h-full relative">
+          
+          <div class="relative w-full max-w-md h-52 flex items-end justify-center">
+
+            <!-- Warm Water Bath Beaker -->
+            <div id="water-bath-container" class="w-72 h-44 bg-sky-100/50 border-4 border-sky-300 rounded-b-3xl relative backdrop-blur-xs flex items-center justify-center shadow-md">
+              
+              <!-- Water Surface & Bubbles -->
+              <div class="absolute inset-x-0 bottom-0 top-8 bg-sky-200/40 rounded-b-2xl overflow-hidden pointer-events-none">
+                <div class="w-full h-1.5 bg-sky-300/60"></div>
+                <div id="bath-bubbles" class="hidden absolute inset-0">
+                  <span class="bubble absolute left-8 bottom-1 w-2 h-2 rounded-full bg-white/80"></span>
+                  <span class="bubble absolute left-20 bottom-1 w-2.5 h-2.5 rounded-full bg-white/80" style="animation-delay: 0.5s"></span>
+                  <span class="bubble absolute right-12 bottom-1 w-2 h-2 rounded-full bg-white/80" style="animation-delay: 0.9s"></span>
+                </div>
+              </div>
+
+              <!-- Digital Thermometer -->
+              <div class="absolute -top-10 right-3 flex flex-col items-center">
+                <div class="bg-slate-800 text-white px-2 py-0.5 rounded-md text-[11px] font-mono font-bold shadow flex items-center gap-1 border border-slate-700">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span id="temp-display">36.5°C</span>
+                </div>
+                <div class="w-1 h-14 bg-slate-300 border border-slate-400 rounded-b-full"></div>
+              </div>
+
+              <span class="absolute bottom-1.5 font-bold text-[10px] text-sky-900 bg-white/80 px-2 py-0.5 rounded-full pointer-events-none">
+                35°C~40°C 따뜻한 물 비커 (체온 유지)
+              </span>
+
+              <!-- Test Tubes Inside Bath -->
+              <div class="flex items-end justify-center gap-10 z-10 -translate-y-1">
+                
+                <!-- Tube (가) -->
+                <div id="tube-ga" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'ga')" onclick="handleTubeClick('ga')"
+                     class="relative flex flex-col items-center cursor-pointer group transition p-1 rounded-xl">
+                  <span class="mb-1 text-[11px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-full shadow">(가) 대조군</span>
+                  <div class="w-10 h-36 rounded-b-full border-2 border-t-0 border-slate-400 bg-white/40 backdrop-blur-sm relative overflow-hidden flex flex-col justify-end shadow-xs group-hover:border-blue-500">
+                    <div id="liquid-ga" class="w-full transition-all duration-500 bg-sky-200/60 rounded-b-full flex items-center justify-center text-[9px] font-bold text-slate-700" style="height: 0%;"></div>
+                  </div>
+                  <div class="text-[10px] font-bold mt-1 text-slate-600 text-center" id="tube-ga-contents">빈 시험관</div>
+                </div>
+
+                <!-- Tube (나) -->
+                <div id="tube-na" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'na')" onclick="handleTubeClick('na')"
+                     class="relative flex flex-col items-center cursor-pointer group transition p-1 rounded-xl">
+                  <span class="mb-1 text-[11px] font-black bg-emerald-600 text-white px-2 py-0.5 rounded-full shadow">(나) 실험군</span>
+                  <div class="w-10 h-36 rounded-b-full border-2 border-t-0 border-slate-400 bg-white/40 backdrop-blur-sm relative overflow-hidden flex flex-col justify-end shadow-xs group-hover:border-emerald-500">
+                    <div id="liquid-na" class="w-full transition-all duration-500 bg-sky-200/60 rounded-b-full flex items-center justify-center text-[9px] font-bold text-slate-700" style="height: 0%;"></div>
+                  </div>
+                  <div class="text-[10px] font-bold mt-1 text-slate-600 text-center" id="tube-na-contents">빈 시험관</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Incubation Action Panel -->
+          <div id="incubation-panel" class="mt-2 flex flex-col items-center gap-1">
+            <button id="btn-start-incubation" disabled onclick="startIncubation()"
+                    class="px-5 py-2 rounded-xl font-bold text-xs text-white bg-slate-400 cursor-not-allowed shadow transition flex items-center gap-1.5">
+              <span>⏱️ 10분 동안 체온에서 반응시키기</span>
+            </button>
+            <span id="incubation-hint" class="text-[11px] text-slate-500">두 시험관에 각각 필요한 시약을 모두 넣어주세요.</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Step 1 Bottom Bar -->
+      <div class="border-t border-slate-200 pt-2 flex justify-between items-center shrink-0">
+        <span class="text-[11px] text-slate-500 font-medium">※ 사람의 체온인 36.5°C 부근에서 소화효소(아밀레이스)가 가장 활발하게 작용합니다.</span>
+        <button id="step1-next-btn" disabled onclick="goToStep(2)" class="px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-200 text-slate-400 cursor-not-allowed transition flex items-center gap-1">
+          <span>2단계: 녹말 검출(아이오딘)로 이동</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- STEP 2: 녹말 검출 반응 (아이오딘 스포이트 드래그앤드롭) -->
+    <!-- ======================================================== -->
+    <div id="step-2" class="step-view hidden flex-col h-full justify-between">
+      <div class="grid grid-cols-12 gap-3 items-center flex-1 min-h-0">
+        
+        <!-- Pipette Shelf (Left) -->
+        <div class="col-span-4 bg-amber-50/80 border border-amber-200 rounded-xl p-2.5 flex flex-col justify-between h-full shadow-inner">
+          <div class="flex items-center justify-between border-b border-amber-200 pb-1.5">
+            <span class="text-xs font-bold text-amber-950 flex items-center gap-1">🧪 녹말 검출 시약</span>
+            <span class="text-[10px] text-amber-800 bg-amber-200/80 px-1.5 py-0.5 rounded font-bold">스포이트 드래그</span>
+          </div>
+
+          <!-- Realistic Vector SVG Pipette Stand & Draggable Object -->
+          <div class="my-auto flex flex-col items-center justify-center py-1">
+            <div id="pipette-iodine-container" class="relative flex flex-col items-center">
+              
+              <!-- Draggable Pipette -->
+              <div id="pipette-iodine" draggable="true" 
+                   ondragstart="handlePipetteDragStart(event, 'iodine')" 
+                   ondragend="handlePipetteDragEnd(event)"
+                   onclick="handlePipetteClick('iodine')"
+                   class="pipette-holder flex flex-col items-center select-none">
+                
+                <!-- SVG Illustrated Lab Dropper (아이오딘 스포이트) -->
+                <svg class="w-16 h-40 filter drop-shadow-md" viewBox="0 0 60 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Rubber Bulb (고무 꼭지) -->
+                  <defs>
+                    <linearGradient id="bulbAmber" x1="15" y1="5" x2="45" y2="45" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#b45309" />
+                      <stop offset="40%" stop-color="#d97706" />
+                      <stop offset="100%" stop-color="#78350f" />
+                    </linearGradient>
+                    <linearGradient id="glassBody" x1="20" y1="50" x2="40" y2="50" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+                      <stop offset="40%" stop-color="#e2e8f0" stop-opacity="0.3" />
+                      <stop offset="100%" stop-color="#94a3b8" stop-opacity="0.6" />
+                    </linearGradient>
+                    <linearGradient id="iodineLiq" x1="22" y1="80" x2="38" y2="80" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#b45309" stop-opacity="0.85" />
+                      <stop offset="50%" stop-color="#d97706" stop-opacity="0.9" />
+                      <stop offset="100%" stop-color="#92400e" stop-opacity="0.9" />
+                    </linearGradient>
+                  </defs>
+                  
+                  <!-- Bulb Top -->
+                  <path d="M22 6 C22 2, 38 2, 38 6 C42 12, 45 22, 43 36 C42 43, 39 45, 36 46 L24 46 C21 45, 18 43, 17 36 C15 22, 18 12, 22 6 Z" fill="url(#bulbAmber)" stroke="#5f2806" stroke-width="1.5" />
+                  <!-- Bulb Ring Collar -->
+                  <rect x="21" y="44" width="18" height="5" rx="2.5" fill="#5f2806" />
+
+                  <!-- Glass Barrel / Stem -->
+                  <path d="M24 49 L36 49 L36 122 L32 142 L28 142 L24 122 Z" fill="url(#glassBody)" stroke="#64748b" stroke-width="1.2" />
+
+                  <!-- Liquid Inside Dropper (연한 갈색 아이오딘) -->
+                  <path d="M25 72 L35 72 L35 122 L31.5 141 L28.5 141 L25 122 Z" fill="url(#iodineLiq)" />
+                  <!-- Meniscus Line -->
+                  <ellipse cx="30" cy="72" rx="5" ry="1.2" fill="#78350f" />
+
+                  <!-- Graduation Marks (눈금선) -->
+                  <line x1="26" y1="82" x2="31" y2="82" stroke="#475569" stroke-width="1" />
+                  <line x1="26" y1="92" x2="34" y2="92" stroke="#475569" stroke-width="1.2" />
+                  <line x1="26" y1="102" x2="31" y2="102" stroke="#475569" stroke-width="1" />
+                  <line x1="26" y1="112" x2="34" y2="112" stroke="#475569" stroke-width="1.2" />
+
+                  <!-- Glass Highlight (유리 반사광) -->
+                  <path d="M26 53 L26 125" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.75" />
+
+                  <!-- Hanging Ready Droplet at the Tip -->
+                  <ellipse class="dripping-drop" cx="30" cy="148" rx="2.8" ry="3.8" fill="#d97706" stroke="#92400e" stroke-width="0.8" />
+                </svg>
+
+                <div class="mt-1 flex items-center gap-1 bg-amber-500 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
+                  <span>스포이트 잡고 끌기</span>
+                  <span class="animate-bounce">👇</span>
+                </div>
+              </div>
+
+              <!-- Reagent Label Card below pipette -->
+              <div class="mt-2 text-center bg-white/95 px-3 py-1.5 rounded-xl border border-amber-200 shadow-2xs">
+                <div class="text-xs font-black text-amber-950">아이오딘-아이오딘화 칼륨</div>
+                <div class="text-[10px] text-amber-800">본래 색: <span class="font-bold text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded">연한 갈색</span></div>
+              </div>
+            </div>
+
+            <div class="mt-2 text-center text-[11px] font-semibold text-amber-900 bg-amber-100/60 p-1.5 rounded-lg border border-amber-200 w-full">
+              👉 스포이트를 페트리 접시 <span class="text-blue-700 font-bold">(가)</span>와 <span class="text-emerald-700 font-bold">(나)</span>로 드래그하세요!
+            </div>
+          </div>
+
+          <div class="bg-amber-100/70 p-2 rounded-lg text-[10px] text-amber-950 leading-relaxed border border-amber-200">
+            📌 <strong>실험 원리:</strong> 아이오딘 용액은 <strong>녹말과 만나면 청람색</strong>으로 변합니다. 만약 침 속 효소에 의해 녹말이 분해되었다면 청람색이 나타나지 않고 <strong>연한 갈색</strong> 그대로 유지됩니다.
+          </div>
+        </div>
+
+        <!-- Petri Dishes Stage (Right) -->
+        <div class="col-span-8 flex flex-col items-center justify-center h-full relative">
+          
+          <div class="flex items-center justify-center gap-8 sm:gap-14 my-auto">
+            
+            <!-- Petri Dish (가) -->
+            <div class="flex flex-col items-center">
+              <span class="text-[11px] font-bold bg-blue-100 text-blue-800 px-3 py-0.5 rounded-full mb-1 shadow-xs">
+                페트리 접시 (가) [녹말+증류수]
+              </span>
+              
+              <div id="dish-ga" ondragover="handleDishDragOver(event)" ondragleave="handleDishDragLeave(event)" ondrop="handleDishDrop(event, 'ga')" onclick="applyIodineToDish('ga')"
+                   class="w-36 h-36 rounded-full border-4 border-slate-300 bg-white shadow-md relative flex items-center justify-center cursor-pointer hover:border-amber-400 transition">
+                <div class="absolute inset-1.5 rounded-full border border-slate-100 pointer-events-none"></div>
+                <!-- Droplet -->
+                <div id="droplet-ga" class="w-20 h-20 rounded-full bg-slate-100 transition-all duration-700 flex items-center justify-center shadow-inner relative">
+                  <span id="dish-ga-label" class="text-[10px] font-bold text-slate-400 text-center px-1">시료 1방울</span>
+                </div>
+              </div>
+              
+              <div class="mt-1 text-center">
+                <span id="result-text-ga" class="text-xs font-bold text-slate-500">결과: 대기 중</span>
+              </div>
+            </div>
+
+            <!-- Petri Dish (나) -->
+            <div class="flex flex-col items-center">
+              <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-3 py-0.5 rounded-full mb-1 shadow-xs">
+                페트리 접시 (나) [녹말+침희석액]
+              </span>
+              
+              <div id="dish-na" ondragover="handleDishDragOver(event)" ondragleave="handleDishDragLeave(event)" ondrop="handleDishDrop(event, 'na')" onclick="applyIodineToDish('na')"
+                   class="w-36 h-36 rounded-full border-4 border-slate-300 bg-white shadow-md relative flex items-center justify-center cursor-pointer hover:border-amber-400 transition">
+                <div class="absolute inset-1.5 rounded-full border border-slate-100 pointer-events-none"></div>
+                <!-- Droplet -->
+                <div id="droplet-na" class="w-20 h-20 rounded-full bg-slate-100 transition-all duration-700 flex items-center justify-center shadow-inner relative">
+                  <span id="dish-na-label" class="text-[10px] font-bold text-slate-400 text-center px-1">시료 1방울</span>
+                </div>
+              </div>
+
+              <div class="mt-1 text-center">
+                <span id="result-text-na" class="text-xs font-bold text-slate-500">결과: 대기 중</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Step 2 Badge Result Check -->
+          <div class="w-full max-w-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-700 text-[11px]">녹말 반응 결과:</span>
+            <div class="flex items-center gap-2">
+              <span id="step2-check-ga" class="px-2 py-0.5 rounded bg-slate-200 text-slate-600 font-bold text-[11px]">(가): ?</span>
+              <span id="step2-check-na" class="px-2 py-0.5 rounded bg-slate-200 text-slate-600 font-bold text-[11px]">(나): ?</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Step 2 Bottom Bar -->
+      <div class="border-t border-slate-200 pt-2 flex justify-between items-center shrink-0">
+        <button onclick="goToStep(1)" class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition">
+          ◀ 1단계로 되돌아가기
+        </button>
+        <button id="step2-next-btn" disabled onclick="goToStep(3)" class="px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-200 text-slate-400 cursor-not-allowed transition flex items-center gap-1">
+          <span>3단계: 당(베네딕트) 검출 및 가열로 이동</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- STEP 3: 당 검출 반응 (베네딕트 주입 & 비커로 드래그 가열)-->
+    <!-- ======================================================== -->
+    <div id="step-3" class="step-view hidden flex-col h-full justify-between">
+      <div class="grid grid-cols-12 gap-3 items-center flex-1 min-h-0">
+        
+        <!-- Controls & Reagent (Left) -->
+        <div class="col-span-4 bg-blue-50/80 border border-blue-200 rounded-xl p-2.5 flex flex-col justify-between h-full shadow-inner">
+          <div class="flex items-center justify-between border-b border-blue-200 pb-1.5">
+            <span class="text-xs font-bold text-blue-950 flex items-center gap-1">🧪 당(포도당/엿당) 검출 시약</span>
+            <span class="text-[10px] text-blue-800 bg-blue-200/80 px-1.5 py-0.5 rounded font-bold">스포이트 드래그</span>
+          </div>
+
+          <!-- Realistic Vector SVG Benedict Dropper -->
+          <div class="my-auto flex flex-col items-center justify-center py-1">
+            <div id="pipette-benedict-container" class="relative flex flex-col items-center">
+              
+              <!-- Draggable Benedict Pipette -->
+              <div id="pipette-benedict" draggable="true" 
+                   ondragstart="handlePipetteDragStart(event, 'benedict')" 
+                   ondragend="handlePipetteDragEnd(event)"
+                   onclick="handlePipetteClick('benedict')"
+                   class="pipette-holder flex flex-col items-center select-none">
+                
+                <!-- SVG Illustrated Lab Dropper (베네딕트 스포이트) -->
+                <svg class="w-16 h-40 filter drop-shadow-md" viewBox="0 0 60 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Rubber Bulb (파란색 고무 꼭지) -->
+                  <defs>
+                    <linearGradient id="bulbBlue" x1="15" y1="5" x2="45" y2="45" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#0284c7" />
+                      <stop offset="40%" stop-color="#0ea5e9" />
+                      <stop offset="100%" stop-color="#0369a1" />
+                    </linearGradient>
+                    <linearGradient id="benedictLiq" x1="22" y1="80" x2="38" y2="80" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.85" />
+                      <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.9" />
+                      <stop offset="100%" stop-color="#0369a1" stop-opacity="0.9" />
+                    </linearGradient>
+                  </defs>
+                  
+                  <!-- Bulb Top -->
+                  <path d="M22 6 C22 2, 38 2, 38 6 C42 12, 45 22, 43 36 C42 43, 39 45, 36 46 L24 46 C21 45, 18 43, 17 36 C15 22, 18 12, 22 6 Z" fill="url(#bulbBlue)" stroke="#0c4a6e" stroke-width="1.5" />
+                  <!-- Bulb Ring Collar -->
+                  <rect x="21" y="44" width="18" height="5" rx="2.5" fill="#0c4a6e" />
+
+                  <!-- Glass Barrel / Stem -->
+                  <path d="M24 49 L36 49 L36 122 L32 142 L28 142 L24 122 Z" fill="url(#glassBody)" stroke="#64748b" stroke-width="1.2" />
+
+                  <!-- Liquid Inside Dropper (선명한 파란색 베네딕트) -->
+                  <path d="M25 70 L35 70 L35 122 L31.5 141 L28.5 141 L25 122 Z" fill="url(#benedictLiq)" />
+                  <!-- Meniscus Line -->
+                  <ellipse cx="30" cy="70" rx="5" ry="1.2" fill="#0369a1" />
+
+                  <!-- Graduation Marks (눈금선) -->
+                  <line x1="26" y1="80" x2="31" y2="80" stroke="#475569" stroke-width="1" />
+                  <line x1="26" y1="90" x2="34" y2="90" stroke="#475569" stroke-width="1.2" />
+                  <line x1="26" y1="100" x2="31" y2="100" stroke="#475569" stroke-width="1" />
+                  <line x1="26" y1="110" x2="34" y2="110" stroke="#475569" stroke-width="1.2" />
+
+                  <!-- Glass Highlight (유리 반사광) -->
+                  <path d="M26 53 L26 125" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.75" />
+
+                  <!-- Hanging Ready Droplet at the Tip -->
+                  <ellipse class="dripping-drop" cx="30" cy="148" rx="2.8" ry="3.8" fill="#38bdf8" stroke="#0284c7" stroke-width="0.8" />
+                </svg>
+
+                <div class="mt-1 flex items-center gap-1 bg-blue-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
+                  <span>스포이트 잡고 끌기</span>
+                  <span class="animate-bounce">👇</span>
+                </div>
+              </div>
+
+              <!-- Reagent Label Card below pipette -->
+              <div class="mt-2 text-center bg-white/95 px-3 py-1.5 rounded-xl border border-blue-200 shadow-2xs">
+                <div class="text-xs font-black text-blue-950">베네딕트 용액 스포이트</div>
+                <div class="text-[10px] text-blue-700">본래 색: <span class="font-bold text-blue-600 bg-blue-100 px-1.5 py-0.2 rounded">청색(파란색)</span></div>
+              </div>
+            </div>
+
+            <!-- Sub-instruction box -->
+            <div id="step3-subguide" class="mt-2 bg-white/90 p-2 rounded-xl border border-blue-200 text-[11px] leading-relaxed text-slate-700 shadow-2xs">
+              <span class="font-bold text-blue-900 block mb-0.5">실행 순서:</span>
+              1. 베네딕트 스포이트를 시험관 (가), (나)에 각각 떨어뜨립니다.<br>
+              2. 베네딕트가 주입된 <strong class="text-rose-600">시험관을 드래그하여 오른쪽 뜨거운 물 비커</strong>에 넣으세요!
+            </div>
+          </div>
+
+          <div class="bg-rose-50 p-2 rounded-lg text-[10px] text-rose-900 leading-relaxed border border-rose-200">
+            ♨️ <strong>실험 주의점:</strong> 베네딕트 반응은 반드시 80°C~90°C 이상의 뜨거운 물에 <strong>가열(중탕)</strong>해야만 반응이 일어나 색깔이 변합니다.
+          </div>
+        </div>
+
+        <!-- Workbench: Test Tube Stand + Hot Water Bath -->
+        <div class="col-span-8 flex items-center justify-around h-full relative px-2">
+          
+          <!-- Tube Stand Area (Left Bench) -->
+          <div id="step3-tube-stand" class="flex flex-col items-center p-2 rounded-2xl transition-all">
+            <span class="text-[10px] font-bold text-slate-500 mb-1">시험관대 (남은 용액)</span>
+            
+            <div class="flex items-end gap-6 bg-slate-100/70 p-2.5 rounded-2xl border border-slate-300">
+              
+              <!-- Tube (가) -->
+              <div id="hot-tube-ga-wrapper" draggable="true" ondragstart="handleHotTubeDragStart(event, 'ga')"
+                   ondragover="handleHotTubeDropOver(event, 'ga')" ondragleave="handleHotTubeDropLeave(event, 'ga')" ondrop="handleHotTubeReagentDrop(event, 'ga')"
+                   onclick="handleHotTubeClick('ga')"
+                   class="relative flex flex-col items-center cursor-pointer group p-1 rounded-xl transition">
+                <span class="mb-1 text-[10px] font-black bg-blue-600 text-white px-1.5 py-0.5 rounded-full shadow">(가)</span>
+                <div class="w-9 h-32 rounded-b-full border-2 border-t-0 border-slate-400 bg-white/40 backdrop-blur-sm relative overflow-hidden flex flex-col justify-end shadow-xs group-hover:border-blue-500">
+                  <div id="hot-liquid-ga" class="w-full h-[65%] transition-colors duration-700 bg-slate-200/60 rounded-b-full flex items-center justify-center">
+                    <span id="hot-liquid-label-ga" class="text-[8px] font-bold text-slate-600 rotate-90 whitespace-nowrap">남은액체</span>
+                  </div>
+                </div>
+                <span id="hot-status-ga" class="text-[9px] font-bold mt-1 text-slate-600">녹말+증류수</span>
+              </div>
+
+              <!-- Tube (나) -->
+              <div id="hot-tube-na-wrapper" draggable="true" ondragstart="handleHotTubeDragStart(event, 'na')"
+                   ondragover="handleHotTubeDropOver(event, 'na')" ondragleave="handleHotTubeDropLeave(event, 'na')" ondrop="handleHotTubeReagentDrop(event, 'na')"
+                   onclick="handleHotTubeClick('na')"
+                   class="relative flex flex-col items-center cursor-pointer group p-1 rounded-xl transition">
+                <span class="mb-1 text-[10px] font-black bg-emerald-600 text-white px-1.5 py-0.5 rounded-full shadow">(나)</span>
+                <div class="w-9 h-32 rounded-b-full border-2 border-t-0 border-slate-400 bg-white/40 backdrop-blur-sm relative overflow-hidden flex flex-col justify-end shadow-xs group-hover:border-emerald-500">
+                  <div id="hot-liquid-na" class="w-full h-[65%] transition-colors duration-700 bg-slate-200/60 rounded-b-full flex items-center justify-center">
+                    <span id="hot-liquid-label-na" class="text-[8px] font-bold text-slate-600 rotate-90 whitespace-nowrap">남은액체</span>
+                  </div>
+                </div>
+                <span id="hot-status-na" class="text-[9px] font-bold mt-1 text-slate-600">녹말+침희석액</span>
+              </div>
+
+            </div>
+
+            <span id="stand-drag-hint" class="text-[10px] text-indigo-600 font-bold mt-1">
+              스포이트를 시험관에 떨어뜨리세요
+            </span>
+          </div>
+
+          <!-- Arrow Indicator -->
+          <div class="flex flex-col items-center text-slate-400 font-bold text-xs">
+            <span class="animate-pulse text-lg">👉</span>
+            <span class="text-[10px]">비커로 드래그</span>
+          </div>
+
+          <!-- Hot Water Bath Beaker Target Area (Right Bench) -->
+          <div class="relative flex flex-col items-center">
+            
+            <div id="hot-bath-target" ondragover="handleHotBathDragOver(event)" ondragleave="handleHotBathDragLeave(event)" ondrop="handleHotBathDrop(event)" onclick="handleHotBathClick()"
+                 class="w-64 h-44 bg-rose-50/60 border-4 border-slate-300 rounded-b-3xl relative backdrop-blur-xs flex items-center justify-center shadow transition-all cursor-pointer">
+              
+              <!-- Steam on Heating -->
+              <div id="hot-steam-container" class="hidden absolute -top-8 inset-x-4 flex justify-between pointer-events-none">
+                <div class="steam w-2 h-8 bg-white/70 rounded-full blur-2xs"></div>
+                <div class="steam w-2.5 h-10 bg-white/60 rounded-full blur-2xs" style="animation-delay: 0.6s"></div>
+                <div class="steam w-2 h-7 bg-white/70 rounded-full blur-2xs" style="animation-delay: 1.2s"></div>
+              </div>
+
+              <!-- Hot water fill -->
+              <div class="absolute inset-x-0 bottom-0 top-10 bg-orange-200/30 rounded-b-2xl overflow-hidden pointer-events-none">
+                <div class="w-full h-1.5 bg-orange-300/40"></div>
+                <div id="hot-bubbles" class="hidden absolute inset-0">
+                  <span class="bubble absolute left-10 bottom-1 w-2 h-2 rounded-full bg-white/80"></span>
+                  <span class="bubble absolute right-12 bottom-1 w-2.5 h-2.5 rounded-full bg-white/80" style="animation-delay: 0.4s"></span>
+                </div>
+              </div>
+
+              <!-- Digital High-Temp Thermometer -->
+              <div class="absolute -top-10 right-2 flex flex-col items-center">
+                <div id="hot-temp-badge" class="bg-slate-800 text-white px-2 py-0.5 rounded-md text-[10px] font-mono font-bold shadow flex items-center gap-1 border border-slate-700">
+                  <span id="hot-temp-dot" class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                  <span id="hot-temp-display">85.0°C</span>
+                </div>
+                <div class="w-1 h-14 bg-slate-300 border border-slate-400 rounded-b-full"></div>
+              </div>
+
+              <!-- Water bath placeholder or inside tubes slot -->
+              <div id="hot-bath-slot" class="flex items-end justify-center gap-6 z-10 -translate-y-1">
+                <span class="text-xs font-bold text-slate-400 border border-dashed border-slate-300 px-3 py-2 rounded-xl bg-white/50">
+                  여기에 시험관을 드래그하세요
+                </span>
+              </div>
+
+              <!-- Label -->
+              <span id="hot-bath-label" class="absolute bottom-1 font-bold text-[10px] text-rose-800 bg-white/80 px-2 py-0.5 rounded-full pointer-events-none">
+                80°C~90°C 뜨거운 물 비커 (중탕 가열)
+              </span>
+            </div>
+
+            <!-- Heating Status Badge -->
+            <div class="mt-1.5 flex items-center gap-2">
+              <span id="step3-check-ga" class="px-2 py-0.5 rounded bg-slate-200 text-slate-600 font-bold text-[10px]">(가): ?</span>
+              <span id="step3-check-na" class="px-2 py-0.5 rounded bg-slate-200 text-slate-600 font-bold text-[10px]">(나): ?</span>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Step 3 Bottom Bar -->
+      <div class="border-t border-slate-200 pt-2 flex justify-between items-center shrink-0">
+        <button onclick="goToStep(2)" class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition">
+          ◀ 2단계로 되돌아가기
+        </button>
+        <button id="step3-next-btn" disabled onclick="goToStep(4)" class="px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-200 text-slate-400 cursor-not-allowed transition flex items-center gap-1">
+          <span>4단계: 결과 해석 & 퀴즈로 이동</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- STEP 4: 탐구 결과 정리 & 퀴즈 집중 모드 (비유 부분 제거) -->
+    <!-- ======================================================== -->
+    <div id="step-4" class="step-view hidden flex-col h-full justify-between overflow-y-auto pr-1">
+      
+      <div class="grid grid-cols-12 gap-3 items-start flex-1 min-h-0">
+        
+        <!-- Summary Matrix Table (Left Side, 5 Cols) -->
+        <div class="col-span-5 bg-indigo-50/70 border border-indigo-100 rounded-xl p-3 flex flex-col justify-between h-full shadow-2xs">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-bold text-indigo-950 font-jua flex items-center gap-1">
+                <span>📋 탐구 결과 정리 표</span>
+              </h3>
+              <span class="text-[10px] text-indigo-700 bg-white px-1.5 py-0.5 rounded border border-indigo-200 font-bold">활동지 3쪽</span>
+            </div>
+
+            <table class="w-full text-xs text-center border-collapse bg-white rounded-lg overflow-hidden shadow-xs">
+              <thead>
+                <tr class="bg-indigo-600 text-white text-[11px]">
+                  <th class="py-1 px-1 border border-indigo-500">과정</th>
+                  <th class="py-1 px-1 border border-indigo-500">검출 용액</th>
+                  <th class="py-1 px-1 border border-indigo-500 bg-blue-700">(가) 증류수</th>
+                  <th class="py-1 px-1 border border-indigo-500 bg-emerald-700">(나) 침희석액</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-[11px]">
+                <tr>
+                  <td class="py-1.5 px-1 font-bold text-slate-700 bg-slate-50">과정 4</td>
+                  <td class="py-1.5 px-1 font-semibold text-amber-900">녹말 검출<br><span class="text-[9px] text-slate-400">(아이오딘)</span></td>
+                  <td class="py-1.5 px-1 text-indigo-900 font-bold bg-blue-50/40">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-indigo-900 mr-0.5 align-middle"></span>청람색 (O)
+                    <div class="text-[9px] text-slate-400 font-normal">녹말 남아있음</div>
+                  </td>
+                  <td class="py-1.5 px-1 text-amber-800 font-bold bg-emerald-50/40">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-600 mr-0.5 align-middle"></span>연한 갈색 (X)
+                    <div class="text-[9px] text-slate-400 font-normal">녹말 분해됨</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="py-1.5 px-1 font-bold text-slate-700 bg-slate-50">과정 6</td>
+                  <td class="py-1.5 px-1 font-semibold text-blue-900">당 검출<br><span class="text-[9px] text-slate-400">(베네딕트+가열)</span></td>
+                  <td class="py-1.5 px-1 text-blue-700 font-bold bg-blue-50/40">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-500 mr-0.5 align-middle"></span>청색 (X)
+                    <div class="text-[9px] text-slate-400 font-normal">당 없음</div>
+                  </td>
+                  <td class="py-1.5 px-1 text-rose-700 font-bold bg-emerald-50/40">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 mr-0.5 align-middle"></span>황적색 (O)
+                    <div class="text-[9px] text-slate-400 font-normal">당(엿당) 생성!</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Quick Conclusion Callout -->
+          <div class="mt-2 p-2 bg-white rounded-lg border border-indigo-200 text-[11px] text-slate-700 leading-tight">
+            🎯 <strong>최종 결론:</strong> 침 속에는 소화효소인 <strong>아밀레이스</strong>가 들어 있어, 녹말을 분해하여 단맛이 나는 <strong>당(엿당)</strong>으로 변화시킵니다!
+          </div>
+        </div>
+
+        <!-- Highlighted Quiz Section (Right Side, 7 Cols) -->
+        <div class="col-span-7 bg-white border-2 border-indigo-200 rounded-xl p-3 flex flex-col justify-between h-full shadow-sm">
+          <div>
+            <div class="flex items-center justify-between border-b border-indigo-100 pb-1 mb-2">
+              <h3 class="text-xs sm:text-sm font-extrabold text-indigo-900 font-jua flex items-center gap-1.5">
+                <span>🎯 탐구 확인 문제 (활동지 5쪽)</span>
+              </h3>
+              <span id="quiz-score-badge" class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                0 / 3 정답
+              </span>
+            </div>
+
+            <!-- Quiz Questions Grid -->
+            <div class="space-y-2">
+              
+              <!-- Quiz 1 -->
+              <div class="p-2 bg-slate-50 hover:bg-indigo-50/40 transition rounded-lg border border-slate-200">
+                <div class="text-xs font-semibold text-slate-800 flex items-start gap-1.5 leading-snug">
+                  <span class="bg-indigo-600 text-white text-[10px] px-1.5 py-0.2 rounded shrink-0">1</span>
+                  <span>시험관 (가)의 용액이 녹말 검출 용액과 반응한 결과로 볼 때 증류수는 녹말을 분해한다.</span>
+                </div>
+                <div class="flex items-center gap-2 mt-1.5 justify-end">
+                  <button onclick="checkQuiz(1, 'O')" id="q1-o" class="px-3 py-0.5 rounded-md border border-slate-300 text-xs font-bold hover:bg-indigo-100 transition">O</button>
+                  <button onclick="checkQuiz(1, 'X')" id="q1-x" class="px-3 py-0.5 rounded-md border border-slate-300 text-xs font-bold hover:bg-indigo-100 transition">X</button>
+                  <span id="q1-feedback" class="text-xs font-bold ml-1"></span>
+                </div>
+              </div>
+
+              <!-- Quiz 2 -->
+              <div class="p-2 bg-slate-50 hover:bg-indigo-50/40 transition rounded-lg border border-slate-200">
+                <div class="text-xs font-semibold text-slate-800 flex items-start gap-1.5 leading-snug">
+                  <span class="bg-indigo-600 text-white text-[10px] px-1.5 py-0.2 rounded shrink-0">2</span>
+                  <span>시험관 (나)의 용액에는 녹말이 그대로 남아 있기 때문에 베네딕트 용액과 반응하여 황적색을 띤 것이다.</span>
+                </div>
+                <div class="flex items-center gap-2 mt-1.5 justify-end">
+                  <button onclick="checkQuiz(2, 'O')" id="q2-o" class="px-3 py-0.5 rounded-md border border-slate-300 text-xs font-bold hover:bg-indigo-100 transition">O</button>
+                  <button onclick="checkQuiz(2, 'X')" id="q2-x" class="px-3 py-0.5 rounded-md border border-slate-300 text-xs font-bold hover:bg-indigo-100 transition">X</button>
+                  <span id="q2-feedback" class="text-xs font-bold ml-1"></span>
+                </div>
+              </div>
+
+              <!-- Quiz 3 -->
+              <div class="p-2 bg-slate-50 hover:bg-indigo-50/40 transition rounded-lg border border-slate-200">
+                <div class="text-xs font-semibold text-slate-800 flex items-start gap-1.5 leading-snug">
+                  <span class="bg-indigo-600 text-white text-[10px] px-1.5 py-0.2 rounded shrink-0">3</span>
+                  <span>이 탐구 결과로 보아 침 속에는 녹말을 분해하는 물질(소화효소 아밀레이스)이 들어 있다.</span>
+                </div>
+                <div class="flex items-center gap-2 mt-1.5 justify-end">
+                  <button onclick="checkQuiz(3, 'O')" id="q3-o" class="px-3 py-0.5 rounded-md border border-slate-300 text-xs font-bold hover:bg-indigo-100 transition">O</button>
+                  <button onclick="checkQuiz(3, 'X')" id="q3-x" class="px-3 py-0.5 rounded-md border border-slate-300 text-xs font-bold hover:bg-indigo-100 transition">X</button>
+                  <span id="q3-feedback" class="text-xs font-bold ml-1"></span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div id="quiz-congrats" class="hidden mt-2 p-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold text-center rounded-lg">
+            🎉 모든 문제를 완벽하게 맞혔습니다! 침의 소화 작용 탐구를 성공적으로 마쳤습니다.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Step 4 Bottom Bar -->
+      <div class="border-t border-slate-200 pt-2 flex justify-between items-center shrink-0">
+        <button onclick="goToStep(3)" class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 transition">
+          ◀ 3단계로 되돌아가기
+        </button>
+        <button onclick="resetLab()" class="px-4 py-1.5 rounded-xl font-bold text-xs bg-gradient-to-r from-indigo-600 to-sky-600 text-white shadow hover:from-indigo-700 hover:to-sky-700 transition flex items-center gap-1.5">
+          <span>🔄 실험 처음부터 다시하기</span>
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-msg" class="fixed bottom-4 right-4 z-50 bg-slate-900/95 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none flex items-center gap-2 border border-slate-700">
+    <span id="toast-icon">✨</span>
+    <span id="toast-text">알림 내용</span>
+  </div>
+
+  <script>
+    // State Machine
+    const labState = {
+      step: 1,
+      // Step 1
+      tubeGa: { starch: false, water: false },
+      tubeNa: { starch: false, saliva: false },
+      selectedReagent: null,
+      incubated: false,
+      incubationTimer: null,
+      
+      // Step 2
+      selectedPipette: null,
+      dishGaTested: false,
+      dishNaTested: false,
+
+      // Step 3
+      benedictGaAdded: false,
+      benedictNaAdded: false,
+      selectedHotTube: null,
+      tubesInHotBath: { ga: false, na: false },
+      heated: false,
+      heatingTimer: null,
+
+      // Step 4
+      quizResults: { 1: false, 2: false, 3: false }
+    };
+
+    function handlePipetteDragStart(ev, pipetteType) {
+      labState.selectedPipette = pipetteType;
+      ev.dataTransfer.setData('text/plain', pipetteType);
+      
+      const pip = document.getElementById(pipetteType === 'iodine' ? 'pipette-iodine' : 'pipette-benedict');
+      if (pip) pip.classList.add('pipette-dragging');
+    }
+
+    function handlePipetteDragEnd(ev) {
+      const pips = document.querySelectorAll('.pipette-holder');
+      pips.forEach(p => p.classList.remove('pipette-dragging'));
+    }
+
+    function handlePipetteClick(pipetteType) {
+      labState.selectedPipette = pipetteType;
+      if (pipetteType === 'iodine') {
+        showToast('아이오딘 스포이트가 선택되었습니다! 페트리 접시를 터치하거나 드래그하세요.', '🧪');
+      } else if (pipetteType === 'benedict') {
+        showToast('베네딕트 스포이트가 선택되었습니다! 시험관 (가), (나)를 터치하거나 드래그하세요.', '💙');
+      }
+    }
+
+    // Touch-friendly dragging for Tablet screen support
+    function setupTouchPipettes() {
+      const pipettes = [
+        { id: 'pipette-iodine', type: 'iodine', targets: [{ id: 'dish-ga', action: () => applyIodineToDish('ga') }, { id: 'dish-na', action: () => applyIodineToDish('na') }] },
+        { id: 'pipette-benedict', type: 'benedict', targets: [{ id: 'hot-tube-ga-wrapper', action: () => applyBenedictToTube('ga') }, { id: 'hot-tube-na-wrapper', action: () => applyBenedictToTube('na') }] }
+      ];
+
+      pipettes.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (!el) return;
+
+        let activeClone = null;
+
+        el.addEventListener('touchstart', (e) => {
+          labState.selectedPipette = item.type;
+          el.classList.add('pipette-dragging');
+          
+          const touch = e.touches[0];
+          activeClone = el.cloneNode(true);
+          activeClone.id = `${item.id}-touch-ghost`;
+          activeClone.style.position = 'fixed';
+          activeClone.style.pointerEvents = 'none';
+          activeClone.style.zIndex = '9999';
+          activeClone.style.opacity = '0.9';
+          activeClone.style.width = '70px';
+          activeClone.style.height = '160px';
+          activeClone.style.left = `${touch.clientX - 35}px`;
+          activeClone.style.top = `${touch.clientY - 40}px`;
+          document.body.appendChild(activeClone);
+        }, { passive: true });
+
+        el.addEventListener('touchmove', (e) => {
+          if (!activeClone) return;
+          const touch = e.touches[0];
+          activeClone.style.left = `${touch.clientX - 35}px`;
+          activeClone.style.top = `${touch.clientY - 40}px`;
+        }, { passive: true });
+
+        el.addEventListener('touchend', (e) => {
+          el.classList.remove('pipette-dragging');
+          if (activeClone) {
+            const touch = e.changedTouches[0];
+            const dropElem = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (dropElem) {
+              item.targets.forEach(tgt => {
+                const targetDom = document.getElementById(tgt.id);
+                if (targetDom && (targetDom === dropElem || targetDom.contains(dropElem))) {
+                  tgt.action();
+                }
+              });
+            }
+            activeClone.remove();
+            activeClone = null;
+          }
+        });
+      });
+    }
+
+    const stepGuides = {
+      1: {
+        title: '1단계: 시험관에 시약 넣기 & 체온 보온',
+        desc: '시약을 드래그하거나 클릭하여 시험관 (가)와 (나)에 각각 넣고 10분 동안 보온 반응을 진행하세요.',
+        emoji: '🧪',
+        badge: 'Step 1 / 4'
+      },
+      2: {
+        title: '2단계: 녹말 검출 반응 (아이오딘)',
+        desc: '아이오딘 스포이트를 페트리 접시 (가)와 (나)에 떨어뜨려 색깔 변화를 관찰하세요.',
+        emoji: '🔬',
+        badge: 'Step 2 / 4'
+      },
+      3: {
+        title: '3단계: 당 검출 반응 (베네딕트 & 가열)',
+        desc: '베네딕트 스포이트를 시험관에 넣고, 시험관을 뜨거운 물 비커(80~90°C)로 드래그하여 중탕 가열하세요.',
+        emoji: '♨️',
+        badge: 'Step 3 / 4'
+      },
+      4: {
+        title: '4단계: 탐구 결과 정리 & 퀴즈',
+        desc: '실험 결과를 정리하고, 탐구 확인 문제를 풀어보세요.',
+        emoji: '📝',
+        badge: 'Step 4 / 4'
+      }
+    };
+
+    function goToStep(targetStep) {
+      labState.step = targetStep;
+
+      for (let i = 1; i <= 4; i++) {
+        const view = document.getElementById(`step-${i}`);
+        if (view) {
+          view.classList.add('hidden');
+          view.classList.remove('flex');
+        }
+      }
+
+      const activeView = document.getElementById(`step-${targetStep}`);
+      if (activeView) {
+        activeView.classList.remove('hidden');
+        activeView.classList.add('flex');
+      }
+
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`step-btn-${i}`);
+        if (!btn) continue;
+        if (i === targetStep) {
+          btn.className = "px-2.5 py-1 rounded-lg transition-all text-white bg-indigo-600 shadow-sm flex items-center gap-1 font-bold";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-lg transition-all text-slate-600 hover:text-indigo-600 flex items-center gap-1";
+        }
+      }
+
+      const guide = stepGuides[targetStep];
+      if (guide) {
+        const titleEl = document.getElementById('guide-title');
+        const descEl = document.getElementById('guide-desc');
+        const emojiEl = document.getElementById('guide-emoji');
+        const badgeEl = document.getElementById('step-badge');
+        if (titleEl) titleEl.innerText = guide.title;
+        if (descEl) descEl.innerText = guide.desc;
+        if (emojiEl) emojiEl.innerText = guide.emoji;
+        if (badgeEl) badgeEl.innerText = guide.badge;
+      }
+    }
+
+    function showToast(message, icon = '💡') {
+      const toast = document.getElementById('toast-msg');
+      const toastText = document.getElementById('toast-text');
+      const toastIcon = document.getElementById('toast-icon');
+      if (!toast || !toastText) return;
+
+      toastText.innerText = message;
+      if (toastIcon) toastIcon.innerText = icon;
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    // Call touch setup on mount
+    document.addEventListener('DOMContentLoaded', () => {
+      goToStep(1);
+      setupTouchPipettes();
+    });
+
+    /* ========================================================= */
+    /* STEP 1: Reagents to Test Tubes Logic                      */
+    /* ========================================================= */
+    function selectReagent(type) {
+      labState.selectedReagent = type;
+      showToast(`${getReagentName(type)} 선택됨! 시험관 (가) 또는 (나)를 터치하거나 드래그하세요.`, '👆');
+    }
+
+    function getReagentName(type) {
+      if (type === 'starch') return '1% 녹말 용액';
+      if (type === 'water') return '증류수 2mL';
+      if (type === 'saliva') return '침 희석액 2mL';
+      return '';
+    }
+
+    function handleDragStart(ev, type) {
+      labState.selectedReagent = type;
+      ev.dataTransfer.setData('text/plain', type);
+    }
+
+    function handleDragOver(ev) {
+      ev.preventDefault();
+      ev.currentTarget.classList.add('drop-active');
+    }
+
+    function handleDragLeave(ev) {
+      ev.currentTarget.classList.remove('drop-active');
+    }
+
+    function handleDrop(ev, tubeId) {
+      ev.preventDefault();
+      ev.currentTarget.classList.remove('drop-active');
+      const reagent = ev.dataTransfer.getData('text/plain') || labState.selectedReagent;
+      applyReagentToTube(tubeId, reagent);
+    }
+
+    function handleTubeClick(tubeId) {
+      if (!labState.selectedReagent) {
+        showToast('먼저 왼쪽 보관대에서 넣을 시약을 선택하세요.', '👈');
+        return;
+      }
+      applyReagentToTube(tubeId, labState.selectedReagent);
+    }
+
+    function applyReagentToTube(tubeId, reagent) {
+      if (labState.incubated) {
+        showToast('이미 보온 반응이 끝났습니다. 2단계로 이동하세요!', '✅');
+        return;
+      }
+
+      if (tubeId === 'ga') {
+        if (reagent === 'saliva') {
+          showToast('시험관 (가)는 대조군입니다. 침 대신 [증류수]를 넣어야 합니다!', '❌');
+          return;
+        }
+        if (reagent === 'starch') {
+          if (labState.tubeGa.starch) return showToast('이미 녹말 용액이 들어갔습니다.', 'ℹ️');
+          labState.tubeGa.starch = true;
+          showToast('(가)에 1% 녹말 용액을 넣었습니다.', '🌾');
+        } else if (reagent === 'water') {
+          if (labState.tubeGa.water) return showToast('이미 증류수가 들어갔습니다.', 'ℹ️');
+          labState.tubeGa.water = true;
+          showToast('(가)에 증류수 2mL를 넣었습니다.', '💧');
+        }
+      } else if (tubeId === 'na') {
+        if (reagent === 'water') {
+          showToast('시험관 (나)는 실험군입니다. 증류수 대신 [침 희석액]을 넣어야 합니다!', '❌');
+          return;
+        }
+        if (reagent === 'starch') {
+          if (labState.tubeNa.starch) return showToast('이미 녹말 용액이 들어갔습니다.', 'ℹ️');
+          labState.tubeNa.starch = true;
+          showToast('(나)에 1% 녹말 용액을 넣었습니다.', '🌾');
+        } else if (reagent === 'saliva') {
+          if (labState.tubeNa.saliva) return showToast('이미 침 희석액이 들어갔습니다.', 'ℹ️');
+          labState.tubeNa.saliva = true;
+          showToast('(나)에 침 희석액 2mL를 넣었습니다.', '🫧');
+        }
+      }
+
+      updateStep1UI();
+    }
+
+    function updateStep1UI() {
+      const liqGa = document.getElementById('liquid-ga');
+      const textGa = document.getElementById('tube-ga-contents');
+      let countGa = (labState.tubeGa.starch ? 1 : 0) + (labState.tubeGa.water ? 1 : 0);
+      liqGa.style.height = `${countGa * 38}%`;
+      if (countGa === 1) textGa.innerText = labState.tubeGa.starch ? '녹말 용액' : '증류수';
+      else if (countGa === 2) {
+        textGa.innerText = '녹말+증류수 (준비됨)';
+        textGa.className = 'text-[10px] font-bold mt-1 text-blue-600 text-center';
+      }
+
+      const liqNa = document.getElementById('liquid-na');
+      const textNa = document.getElementById('tube-na-contents');
+      let countNa = (labState.tubeNa.starch ? 1 : 0) + (labState.tubeNa.saliva ? 1 : 0);
+      liqNa.style.height = `${countNa * 38}%`;
+      if (countNa === 1) textNa.innerText = labState.tubeNa.starch ? '녹말 용액' : '침 희석액';
+      else if (countNa === 2) {
+        textNa.innerText = '녹말+침희석액 (준비됨)';
+        textNa.className = 'text-[10px] font-bold mt-1 text-emerald-600 text-center';
+      }
+
+      const starchLeft = 2 - ((labState.tubeGa.starch ? 1 : 0) + (labState.tubeNa.starch ? 1 : 0));
+      document.getElementById('starch-stock').innerText = `${starchLeft}회 남음`;
+      document.getElementById('water-stock').innerText = labState.tubeGa.water ? '사용완료' : '1회 남음';
+      document.getElementById('saliva-stock').innerText = labState.tubeNa.saliva ? '사용완료' : '1회 남음';
+
+      const ready = labState.tubeGa.starch && labState.tubeGa.water && labState.tubeNa.starch && labState.tubeNa.saliva;
+      const btnIncubate = document.getElementById('btn-start-incubation');
+      const hint = document.getElementById('incubation-hint');
+
+      if (ready && !labState.incubated) {
+        btnIncubate.disabled = false;
+        btnIncubate.className = 'px-5 py-2 rounded-xl font-bold text-xs text-white bg-indigo-600 hover:bg-indigo-700 shadow animate-pulse cursor-pointer flex items-center gap-1.5';
+        hint.innerText = '모든 시약 주입 완료! 버튼을 눌러 36.5°C 체온에서 10분간 보온하세요.';
+        hint.className = 'text-[11px] text-indigo-700 font-bold';
+      }
+    }
+
+    function startIncubation() {
+      const btn = document.getElementById('btn-start-incubation');
+      btn.disabled = true;
+      btn.classList.remove('animate-pulse');
+      
+      const bubbles = document.getElementById('bath-bubbles');
+      bubbles.classList.remove('hidden');
+
+      let seconds = 0;
+      btn.innerHTML = `<span>⏳ 체온에서 효소 반응 중... (<span id="inc-sec">0</span>/10분)</span>`;
+
+      if (labState.incubationTimer) clearInterval(labState.incubationTimer);
+      labState.incubationTimer = setInterval(() => {
+        seconds += 2;
+        const displaySec = document.getElementById('inc-sec');
+        if (displaySec) displaySec.innerText = seconds;
+
+        if (seconds >= 10) {
+          clearInterval(labState.incubationTimer);
+          labState.incubationTimer = null;
+          labState.incubated = true;
+          bubbles.classList.add('hidden');
+          btn.innerHTML = `<span>✅ 10분 보온 반응 완료 (체온 36.5°C)</span>`;
+          btn.className = 'px-5 py-2 rounded-xl font-bold text-xs text-white bg-emerald-600 shadow cursor-default';
+          
+          document.getElementById('incubation-hint').innerHTML = `🎉 <strong>보온 반응 완료!</strong> 침 속 아밀레이스가 작용했습니다.`;
+          
+          const nextBtn = document.getElementById('step1-next-btn');
+          nextBtn.disabled = false;
+          nextBtn.className = 'px-4 py-1.5 rounded-xl font-bold text-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow transition flex items-center gap-1 cursor-pointer';
+          showToast('보온 반응 완료! 우측 하단의 [2단계 이동]을 누르세요.', '🎉');
+        }
+      }, 300);
+    }
+
+    /* ========================================================= */
+    /* STEP 2: Iodine Pipette Drag-and-Drop Reactions           */
+    /* ========================================================= */
+    function handleDishDragOver(ev) {
+      ev.preventDefault();
+      ev.currentTarget.classList.add('drop-active');
+    }
+
+    function handleDishDragLeave(ev) {
+      ev.currentTarget.classList.remove('drop-active');
+    }
+
+    function handleDishDrop(ev, dishType) {
+      ev.preventDefault();
+      ev.currentTarget.classList.remove('drop-active');
+      const reagent = ev.dataTransfer.getData('text/plain') || labState.selectedPipette;
+      if (reagent === 'iodine') {
+        applyIodineToDish(dishType);
+      }
+    }
+
+    function applyIodineToDish(dishType) {
+      if (dishType === 'ga') {
+        if (labState.dishGaTested) return;
+        labState.dishGaTested = true;
+        const drop = document.getElementById('droplet-ga');
+        const label = document.getElementById('dish-ga-label');
+        const resText = document.getElementById('result-text-ga');
+        const checkBadge = document.getElementById('step2-check-ga');
+
+        drop.style.backgroundColor = '#1e1b4b'; // Deep blue/violet
+        drop.style.boxShadow = '0 0 12px rgba(30, 27, 75, 0.7)';
+        label.innerText = '청람색 반응';
+        label.className = 'text-[10px] font-black text-white text-center';
+        resText.innerText = '청람색 (녹말 검출: O)';
+        resText.className = 'text-xs font-extrabold text-blue-900 bg-blue-100 px-2 py-0.5 rounded-full';
+        checkBadge.innerText = '(가): 청람색 (O)';
+        checkBadge.className = 'px-2 py-0.5 rounded bg-blue-600 text-white font-bold text-[11px]';
+
+        showToast('페트리 접시 (가) 청람색 변화! 녹말이 그대로 남아 있습니다.', '🌾');
+      } else if (dishType === 'na') {
+        if (labState.dishNaTested) return;
+        labState.dishNaTested = true;
+        const drop = document.getElementById('droplet-na');
+        const label = document.getElementById('dish-na-label');
+        const resText = document.getElementById('result-text-na');
+        const checkBadge = document.getElementById('step2-check-na');
+
+        // 연한 갈색으로 변경
+        drop.style.backgroundColor = '#d97706'; // light brown / amber
+        drop.style.boxShadow = '0 0 10px rgba(217, 119, 6, 0.5)';
+        label.innerText = '연한 갈색';
+        label.className = 'text-[10px] font-black text-white text-center';
+        resText.innerText = '연한 갈색 (녹말 검출: X)';
+        resText.className = 'text-xs font-extrabold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full';
+        checkBadge.innerText = '(나): 연한 갈색 (X)';
+        checkBadge.className = 'px-2 py-0.5 rounded bg-amber-600 text-white font-bold text-[11px]';
+
+        showToast('페트리 접시 (나) 연한 갈색 유지! 침에 의해 녹말이 분해되었습니다.', '✨');
+      }
+
+      if (labState.dishGaTested && labState.dishNaTested) {
+        const nextBtn = document.getElementById('step2-next-btn');
+        nextBtn.disabled = false;
+        nextBtn.className = 'px-4 py-1.5 rounded-xl font-bold text-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow transition flex items-center gap-1 cursor-pointer';
+        showToast('녹말 검출 관찰 완료! 3단계(당 검출 및 가열)로 이동하세요.', '🎯');
+      }
+    }
+
+    /* ========================================================= */
+    /* STEP 3: Benedict Addition & Hot Water Bath Drag-and-Drop  */
+    /* ========================================================= */
+    function handleHotTubeDragStart(ev, tubeId) {
+      if (!labState.benedictGaAdded || !labState.benedictNaAdded) {
+        ev.preventDefault();
+        showToast('먼저 베네딕트 용액을 시험관 (가)와 (나)에 모두 떨어뜨려 넣으세요!', '⚠️');
+        return;
+      }
+      labState.selectedHotTube = tubeId;
+      ev.dataTransfer.setData('text/plain', tubeId);
+    }
+
+    function handleHotTubeDropOver(ev, tubeId) {
+      ev.preventDefault();
+      ev.currentTarget.classList.add('drop-active');
+    }
+
+    function handleHotTubeDropLeave(ev, tubeId) {
+      ev.currentTarget.classList.remove('drop-active');
+    }
+
+    function handleHotTubeReagentDrop(ev, tubeId) {
+      ev.preventDefault();
+      ev.currentTarget.classList.remove('drop-active');
+      const reagent = ev.dataTransfer.getData('text/plain') || labState.selectedPipette;
+      if (reagent === 'benedict') {
+        applyBenedictToTube(tubeId);
+      }
+    }
+
+    function handleHotTubeClick(tubeId) {
+      if (labState.selectedPipette === 'benedict') {
+        applyBenedictToTube(tubeId);
+      } else if (labState.benedictGaAdded && labState.benedictNaAdded) {
+        // Fallback for touch click to transfer to hot bath
+        putTubeIntoHotBath(tubeId);
+      } else {
+        showToast('먼저 [베네딕트 용액 스포이트]를 시험관에 떨어뜨려 넣으세요.', '👈');
+      }
+    }
+
+    function applyBenedictToTube(tubeId) {
+      if (tubeId === 'ga') {
+        if (labState.benedictGaAdded) return showToast('(가)에는 이미 베네딕트 용액이 들어갔습니다.', 'ℹ️');
+        labState.benedictGaAdded = true;
+        const liqGa = document.getElementById('hot-liquid-ga');
+        liqGa.style.backgroundColor = '#38bdf8'; // Sky blue
+        document.getElementById('hot-liquid-label-ga').innerText = '청색(베네딕트)';
+        showToast('시험관 (가)에 베네딕트 용액을 넣었습니다.', '💙');
+      } else if (tubeId === 'na') {
+        if (labState.benedictNaAdded) return showToast('(나)에는 이미 베네딕트 용액이 들어갔습니다.', 'ℹ️');
+        labState.benedictNaAdded = true;
+        const liqNa = document.getElementById('hot-liquid-na');
+        liqNa.style.backgroundColor = '#38bdf8'; // Sky blue
+        document.getElementById('hot-liquid-label-na').innerText = '청색(베네딕트)';
+        showToast('시험관 (나)에 베네딕트 용액을 넣었습니다.', '💙');
+      }
+
+      if (labState.benedictGaAdded && labState.benedictNaAdded) {
+        document.getElementById('stand-drag-hint').innerText = '🔥 시험관을 오른쪽 뜨거운 물 비커로 드래그하세요!';
+        document.getElementById('stand-drag-hint').className = 'text-[10px] text-rose-600 font-extrabold mt-1 animate-pulse';
+        document.getElementById('step3-subguide').innerHTML = `
+          <strong class="text-rose-600">✅ 베네딕트 주입 완료!</strong><br>
+          이제 시험관을 잡고 <strong class="text-rose-700">뜨거운 물 비커로 드래그</strong>하여 가열을 시작하세요.
+        `;
+      }
+    }
+
+    function handleHotBathDragOver(ev) {
+      ev.preventDefault();
+      ev.currentTarget.classList.add('drop-active');
+    }
+
+    function handleHotBathDragLeave(ev) {
+      ev.currentTarget.classList.remove('drop-active');
+    }
+
+    function handleHotBathDrop(ev) {
+      ev.preventDefault();
+      ev.currentTarget.classList.remove('drop-active');
+      const tubeId = ev.dataTransfer.getData('text/plain') || labState.selectedHotTube;
+      if (tubeId === 'ga' || tubeId === 'na') {
+        putTubeIntoHotBath(tubeId);
+      }
+    }
+
+    function handleHotBathClick() {
+      if (labState.benedictGaAdded && labState.benedictNaAdded && (!labState.tubesInHotBath.ga || !labState.tubesInHotBath.na)) {
+        if (!labState.tubesInHotBath.ga) putTubeIntoHotBath('ga');
+        else if (!labState.tubesInHotBath.na) putTubeIntoHotBath('na');
+      }
+    }
+
+    function putTubeIntoHotBath(tubeId) {
+      if (!labState.benedictGaAdded || !labState.benedictNaAdded) {
+        showToast('먼저 시험관 (가)와 (나)에 베네딕트 용액을 모두 넣어주세요!', '⚠️');
+        return;
+      }
+
+      labState.tubesInHotBath[tubeId] = true;
+
+      // Visual hide from left rack
+      if (tubeId === 'ga') {
+        document.getElementById('hot-tube-ga-wrapper').style.opacity = '0.25';
+        showToast('시험관 (가)를 뜨거운 물 비커에 넣었습니다.', '♨️');
+      } else if (tubeId === 'na') {
+        document.getElementById('hot-tube-na-wrapper').style.opacity = '0.25';
+        showToast('시험관 (나)를 뜨거운 물 비커에 넣었습니다.', '♨️');
+      }
+
+      // Check if both inside bath
+      if (labState.tubesInHotBath.ga && labState.tubesInHotBath.na && !labState.heated) {
+        startHotWaterHeating();
+      } else {
+        const remaining = !labState.tubesInHotBath.ga ? '(가)' : '(나)';
+        showToast(`남은 시험관 ${remaining}도 비커로 마저 넣어주세요!`, '👆');
+      }
+    }
+
+    function startHotWaterHeating() {
+      const bathTarget = document.getElementById('hot-bath-target');
+      bathTarget.classList.add('border-rose-400', 'bg-rose-100/50');
+      
+      const steam = document.getElementById('hot-steam-container');
+      const bubbles = document.getElementById('hot-bubbles');
+      steam.classList.remove('hidden');
+      bubbles.classList.remove('hidden');
+
+      const slot = document.getElementById('hot-bath-slot');
+      slot.innerHTML = `
+        <div class="flex items-end justify-center gap-6">
+          <div class="flex flex-col items-center">
+            <span class="text-[9px] font-bold bg-blue-600 text-white px-1.5 rounded-full">(가)</span>
+            <div class="w-8 h-28 rounded-b-full border-2 border-t-0 border-slate-500 bg-white/40 flex flex-col justify-end overflow-hidden">
+              <div id="bath-tube-ga" class="w-full h-[65%] bg-sky-500 transition-colors duration-1000 rounded-b-full flex items-center justify-center">
+                <span class="text-[8px] text-white font-bold rotate-90">가열 중</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col items-center">
+            <span class="text-[9px] font-bold bg-emerald-600 text-white px-1.5 rounded-full">(나)</span>
+            <div class="w-8 h-28 rounded-b-full border-2 border-t-0 border-slate-500 bg-white/40 flex flex-col justify-end overflow-hidden">
+              <div id="bath-tube-na" class="w-full h-[65%] bg-sky-500 transition-colors duration-1000 rounded-b-full flex items-center justify-center">
+                <span class="text-[8px] text-white font-bold rotate-90">가열 중</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('hot-bath-label').innerText = '🔥 85°C 중탕 가열 반응 진행 중...';
+      document.getElementById('hot-bath-label').className = 'absolute bottom-1 font-bold text-[10px] text-white bg-rose-600 px-2.5 py-0.5 rounded-full animate-pulse shadow';
+
+      let count = 0;
+      if (labState.heatingTimer) clearInterval(labState.heatingTimer);
+      labState.heatingTimer = setInterval(() => {
+        count++;
+        if (count >= 5) {
+          clearInterval(labState.heatingTimer);
+          labState.heatingTimer = null;
+          labState.heated = true;
+
+          // (가) remains blue
+          const bGa = document.getElementById('bath-tube-ga');
+          if (bGa) {
+            bGa.style.backgroundColor = '#0284c7'; // Blue
+            bGa.innerHTML = '<span class="text-[8px] text-white font-bold rotate-90">청색(X)</span>';
+          }
+          const liqGa = document.getElementById('hot-liquid-ga');
+          if (liqGa) liqGa.style.backgroundColor = '#0284c7';
+          document.getElementById('step3-check-ga').innerText = '(가): 청색 (X)';
+          document.getElementById('step3-check-ga').className = 'px-2 py-0.5 rounded bg-blue-600 text-white font-bold text-[10px]';
+
+          // (나) turns Brick-Red / Orange-Red (황적색)
+          const bNa = document.getElementById('bath-tube-na');
+          if (bNa) {
+            bNa.style.backgroundColor = '#ea580c'; // 황적색
+            bNa.innerHTML = '<span class="text-[8px] text-white font-bold rotate-90">황적색(O)</span>';
+          }
+          const liqNa = document.getElementById('hot-liquid-na');
+          if (liqNa) liqNa.style.backgroundColor = '#ea580c';
+          document.getElementById('step3-check-na').innerText = '(나): 황적색 (O)';
+          document.getElementById('step3-check-na').className = 'px-2 py-0.5 rounded bg-rose-600 text-white font-bold text-[10px]';
+
+          document.getElementById('hot-bath-label').innerText = '✅ 85°C 중탕 가열 완료 (황적색 침전 형성!)';
+          document.getElementById('hot-bath-label').className = 'absolute bottom-1 font-bold text-[10px] text-white bg-emerald-600 px-2 py-0.5 rounded-full shadow';
+
+          const nextBtn = document.getElementById('step3-next-btn');
+          nextBtn.disabled = false;
+          nextBtn.className = 'px-4 py-1.5 rounded-xl font-bold text-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow transition flex items-center gap-1 cursor-pointer';
+
+          showToast('시험관 (나)가 황적색으로 변했습니다! 당(엿당)이 생성되었습니다.', '🍬');
+        }
+      }, 500);
+    }
+
+    /* ========================================================= */
+    /* STEP 4: Quiz Logic & Reset Routine                        */
+    /* ========================================================= */
+    const quizAnswers = { 1: 'X', 2: 'X', 3: 'O' };
+
+    function checkQuiz(qNum, selected) {
+      const fb = document.getElementById(`q${qNum}-feedback`);
+      const btnO = document.getElementById(`q${qNum}-o`);
+      const btnX = document.getElementById(`q${qNum}-x`);
+
+      if (selected === quizAnswers[qNum]) {
+        labState.quizResults[qNum] = true;
+        fb.innerHTML = '🎉 <span class="text-emerald-600">정답!</span>';
+        if (selected === 'O') {
+          btnO.className = 'px-3 py-0.5 rounded-md border-2 border-emerald-500 bg-emerald-50 text-emerald-700 text-xs font-bold';
+          btnX.className = 'px-3 py-0.5 rounded-md border border-slate-200 text-xs font-bold opacity-30';
+        } else {
+          btnX.className = 'px-3 py-0.5 rounded-md border-2 border-emerald-500 bg-emerald-50 text-emerald-700 text-xs font-bold';
+          btnO.className = 'px-3 py-0.5 rounded-md border border-slate-200 text-xs font-bold opacity-30';
+        }
+      } else {
+        labState.quizResults[qNum] = false;
+        fb.innerHTML = '❌ <span class="text-rose-600">다시 생각해보세요!</span>';
+        if (selected === 'O') {
+          btnO.className = 'px-3 py-0.5 rounded-md border-2 border-rose-400 bg-rose-50 text-rose-700 text-xs font-bold';
+        } else {
+          btnX.className = 'px-3 py-0.5 rounded-md border-2 border-rose-400 bg-rose-50 text-rose-700 text-xs font-bold';
+        }
+      }
+
+      updateQuizScore();
+    }
+
+    function updateQuizScore() {
+      const correctCount = Object.values(labState.quizResults).filter(Boolean).length;
+      document.getElementById('quiz-score-badge').innerText = `${correctCount} / 3 정답`;
+      if (correctCount === 3) {
+        document.getElementById('quiz-congrats').classList.remove('hidden');
+        showToast('축하합니다! 모든 탐구 퀴즈를 맞혔습니다!', '🏆');
+      }
+    }
+
+    function resetLab() {
+      if (labState.incubationTimer) clearInterval(labState.incubationTimer);
+      if (labState.heatingTimer) clearInterval(labState.heatingTimer);
+
+      labState.step = 1;
+      labState.tubeGa = { starch: false, water: false };
+      labState.tubeNa = { starch: false, saliva: false };
+      labState.selectedReagent = null;
+      labState.incubated = false;
+      labState.selectedPipette = null;
+      labState.dishGaTested = false;
+      labState.dishNaTested = false;
+      labState.benedictGaAdded = false;
+      labState.benedictNaAdded = false;
+      labState.selectedHotTube = null;
+      labState.tubesInHotBath = { ga: false, na: false };
+      labState.heated = false;
+      labState.quizResults = { 1: false, 2: false, 3: false };
+
+      // Reset Step 1
+      const liqGa = document.getElementById('liquid-ga');
+      if (liqGa) liqGa.style.height = '0%';
+      const liqNa = document.getElementById('liquid-na');
+      if (liqNa) liqNa.style.height = '0%';
+      document.getElementById('tube-ga-contents').innerText = '빈 시험관';
+      document.getElementById('tube-na-contents').innerText = '빈 시험관';
+      document.getElementById('tube-ga-contents').className = 'text-[10px] font-bold mt-1 text-slate-600 text-center';
+      document.getElementById('tube-na-contents').className = 'text-[10px] font-bold mt-1 text-slate-600 text-center';
+
+      document.getElementById('starch-stock').innerText = '2회 남음';
+      document.getElementById('water-stock').innerText = '1회 남음';
+      document.getElementById('saliva-stock').innerText = '1회 남음';
+
+      const btnIncubate = document.getElementById('btn-start-incubation');
+      btnIncubate.disabled = true;
+      btnIncubate.className = 'px-5 py-2 rounded-xl font-bold text-xs text-white bg-slate-400 cursor-not-allowed shadow transition flex items-center gap-1.5';
+      btnIncubate.innerHTML = `<span>⏱️ 10분 동안 체온에서 반응시키기</span>`;
+      document.getElementById('incubation-hint').innerText = '두 시험관에 각각 필요한 시약을 모두 넣어주세요.';
+      document.getElementById('bath-bubbles').classList.add('hidden');
+
+      const s1Next = document.getElementById('step1-next-btn');
+      s1Next.disabled = true;
+      s1Next.className = 'px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-200 text-slate-400 cursor-not-allowed transition flex items-center gap-1';
+
+      // Reset Step 2
+      const dropGa = document.getElementById('droplet-ga');
+      dropGa.style.backgroundColor = '#f1f5f9';
+      dropGa.style.boxShadow = 'none';
+      document.getElementById('dish-ga-label').innerText = '시료 1방울';
+      document.getElementById('dish-ga-label').className = 'text-[10px] font-bold text-slate-400 text-center px-1';
+      document.getElementById('result-text-ga').innerText = '결과: 대기 중';
+      document.getElementById('result-text-ga').className = 'text-xs font-bold text-slate-500';
+
+      const dropNa = document.getElementById('droplet-na');
+      dropNa.style.backgroundColor = '#f1f5f9';
+      dropNa.style.boxShadow = 'none';
+      document.getElementById('dish-na-label').innerText = '시료 1방울';
+      document.getElementById('dish-na-label').className = 'text-[10px] font-bold text-slate-400 text-center px-1';
+      document.getElementById('result-text-na').innerText = '결과: 대기 중';
+      document.getElementById('result-text-na').className = 'text-xs font-bold text-slate-500';
+
+      document.getElementById('step2-check-ga').innerText = '(가): ?';
+      document.getElementById('step2-check-ga').className = 'px-2 py-0.5 rounded bg-slate-200 text-slate-600 font-bold text-[11px]';
+      document.getElementById('step2-check-na').innerText = '(나): ?';
+      document.getElementById('step2-check-na').className = 'px-2 py-0.5 rounded bg-slate-200 text-slate-600 font-bold text-[11px]';
+
+      const s2Next = document.getElementById('step2-next-btn');
+      s2Next.disabled = true;
+      s2Next.className = 'px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-200 text-slate-400 cursor-not-allowed transition flex items-center gap-1';
+
+      // Reset Step 3
+      const hotGaWrap = document.getElementById('hot-tube-ga-wrapper');
+      if (hotGaWrap) hotGaWrap.style.opacity = '1';
+      const hotNaWrap = document.getElementById('hot-tube-na-wrapper');
+      if (hotNaWrap) hotNaWrap.style.opacity = '1';
+
+      const hotLiqGa = document.getElementById('hot-liquid-ga');
+      if (hotLiqGa) hotLiqGa.style.backgroundColor = 'rgba(226, 232, 240, 0.6)';
+      const hotLiqNa = document.getElementById('hot-liquid-na');
+      if (hotLiqNa) hotLiqNa.style.backgroundColor = 'rgba(226, 232, 240, 0.6)';
+
+      document.getElementById('hot-liquid-label-ga').innerText = '남은액체';
+      document.getElementById('hot-liquid-label-na').innerText = '남은액체';
+      document.getElementById('stand-drag-hint').innerText = '스포이트를 시험관에 떨어뜨리세요';
+      document.getElementById('stand-drag-hint').className = 'text-[10px] text-indigo-600 font-bold mt-1';
+
+      const bathTarget = document.getElementById('hot-bath-target');
+      bathTarget.className = 'w-64 h-44 bg-rose-50/60 border-4 border-slate-300 rounded-b-3xl relative backdrop-blur-xs flex items-center justify-center shadow transition-all cursor-pointer';
+
+      document.getElementById('hot-steam-container').classList.add('hidden');
+      document.getElementById('hot-bubbles').classList.add('hidden');
+      document.getElementById('hot-bath-slot').innerHTML = `
+        <span class="text-xs font-bold text-slate-400 border border-dashed border-slate-300 px-3 py-2 rounded-xl bg-white/50">
+          여기에 시험관을 드래그하세요
+        </span>
+      `;
+      document.getElementById('hot-bath-label').innerText = '80°C~90°C 뜨거운 물 비커 (중탕 가열)';
+      document.getElementById('hot-bath-label').className = 'absolute bottom-1 font-bold text-[10px] text-rose-800 bg-white/80 px-2 py-0.5 rounded-full pointer-events-none';
+
+      document.getElementById('step3-check-ga').innerText = '(가): ?';
+      document.getElementById('step3-check-ga').className = 'px-2 py-0.5 rounded bg-slate-200 text-slate-600 font-bold text-[10px]';
+      document.getElementById('step3-check-na').innerText = '(나): ?';
+      document.getElementById('step3-check-na').className = 'px-2 py-0.5 rounded bg-slate-200 text-slate-600 font-bold text-[10px]';
+
+      document.getElementById('step3-subguide').innerHTML = `
+        <span class="font-bold text-blue-900 block mb-0.5">실행 순서:</span>
+        1. 베네딕트 스포이트를 시험관 (가), (나)에 각각 떨어뜨립니다.<br>
+        2. 베네딕트가 주입된 <strong class="text-rose-600">시험관을 드래그하여 오른쪽 뜨거운 물 비커</strong>에 넣으세요!
+      `;
+
+      const s3Next = document.getElementById('step3-next-btn');
+      s3Next.disabled = true;
+      s3Next.className = 'px-4 py-1.5 rounded-xl font-bold text-xs bg-slate-200 text-slate-400 cursor-not-allowed transition flex items-center gap-1';
+
+      // Reset Step 4
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`q${i}-feedback`).innerHTML = '';
+        const bo = document.getElementById(`q${i}-o`);
+        const bx = document.getElementById(`q${i}-x`);
+        bo.className = 'px-3 py-0.5 rounded-md border border-slate-300 text-xs font-bold hover:bg-indigo-100 transition';
+        bx.className = 'px-3 py-0.5 rounded-md border border-slate-300 text-xs font-bold hover:bg-indigo-100 transition';
+      }
+      document.getElementById('quiz-score-badge').innerText = '0 / 3 정답';
+      document.getElementById('quiz-congrats').classList.add('hidden');
+
+      goToStep(1);
+      showToast('실험실이 깨끗하게 초기화되었습니다!', '🔄');
+    }
+  </script>
+</body>
+</html>
